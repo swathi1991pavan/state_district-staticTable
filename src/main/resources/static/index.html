@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>State and Districts Dropdown</title>
+</head>
+
+
+<body>
+    <h1>Select State and District</h1>
+
+    <label for="states">Select State:</label>
+    <select id="states" onchange="loadDistricts()">
+        <option value="">Select a State</option>
+    </select>
+
+    <label for="districts">Select District:</label>
+    <select id="districts">
+        <option value="">Select a District</option>
+    </select>
+
+    <script>
+        const statesDropdown = document.getElementById("states");
+        const districtsDropdown = document.getElementById("districts");
+        let selectedStateName = ""; // Initialize the variable
+
+        console.log("HI");
+        // Fetch states from API and populate the dropdown
+        fetch("/api/states/v1")
+            .then(response => response.json())
+            .then(states => {
+                states.forEach(state => {
+                    const option = document.createElement("option");
+                    option.value = state.id;
+                    option.text = state.stateName;
+                    console.log(state.stateName);
+                    console.log("Hello")
+                    statesDropdown.appendChild(option);
+                });
+              
+            });
+        
+        
+
+        // Load districts for the selected state
+        function loadDistricts() {        	       	
+        	const selectedStateId = statesDropdown.value;
+        	
+        	//Get selected text from a drop-down list with JavaScript
+            const stateName = statesDropdown.options[statesDropdown.selectedIndex].text;                      
+            districtsDropdown.innerHTML = '<option value="">Select a District</option>';			
+            if (selectedStateId) {
+            	//fetch("api/states/selectedStateName")
+            	fetch(`/api/states/${encodeURIComponent(stateName)}`)
+                    .then(response => response.json())
+                    .then(districts => {
+                    	
+                        districts.forEach(district => {
+                        	console.log(district);
+                            const option = document.createElement("option");
+                            option.value = district.id;
+                            option.text = district.districtName; 
+                            districtsDropdown.appendChild(option);
+                        });
+                       
+                    });
+            }
+        }
+    </script>
+</body>
+</html>
+
+</html>
